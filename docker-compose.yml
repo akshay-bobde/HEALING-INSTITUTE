@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+      MYSQL_DATABASE: healingdb
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - backend
+
+  backend:
+    build: ./backend
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+    ports:
+      - '3001:3001'
+    depends_on:
+      - mysql
+    networks:
+      - backend
+
+  frontend:
+    build: ./frontend
+    ports:
+      - '3000:80'
+    depends_on:
+      - backend
+    networks:
+      - backend
+
+volumes:
+  dbdata:
+
+networks:
+  backend:
