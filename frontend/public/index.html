@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healing Institute - Wellness & Care</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      background-color: #f7f9fa;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(90deg, #0f9d58, #43a047);
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-weight: 500;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .hero {
+      background: url('images/hero.jpg') center/cover no-repeat;
+      color: white;
+      text-align: center;
+      padding: 5rem 1rem;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      background-color: rgba(0,0,0,0.4);
+      display: inline-block;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+    }
+    .form-section {
+      display: flex;
+      justify-content: center;
+      padding: 3rem 1rem;
+      background-color: #ffffff;
+    }
+    form {
+      background: #f4f7f8;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.8rem;
+      background-color: #0f9d58;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0c8d4a;
+    }
+    .message {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    footer {
+      background: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Healing Institute</h2>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Empowering Wellness Through Healing</h1>
+  </section>
+
+  <section class="form-section">
+    <form id="userForm">
+      <h3>Join Our Healing Community</h3>
+      <label for="username">Name:</label>
+      <input type="text" id="username" name="username" required />
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="mobile">Mobile:</label>
+      <input type="tel" id="mobile" name="mobile" required />
+
+      <label for="age">Age:</label>
+      <input type="number" id="age" name="age" required />
+
+      <button type="submit">Submit</button>
+      <div id="message" class="message"></div>
+    </form>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Healing Institute. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById('userForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.textContent = '';
+      const formData = {
+        username: form.username.value.trim(),
+        email: form.email.value.trim(),
+        mobile: form.mobile.value.trim(),
+        age: parseInt(form.age.value, 10)
+      };
+
+      try {
+        const response = await fetch('http://localhost:3001/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        if (!response.ok) throw new Error(await response.text());
+        message.style.color = 'green';
+        message.textContent = await response.text();
+        form.reset();
+      } catch (error) {
+        message.style.color = 'red';
+        message.textContent = 'Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
