@@ -2,119 +2,134 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Healing Institute - Contact Us</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Us | Healing Institute</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f7f8;
-      color: #333;
+      font-family: "Poppins", sans-serif;
       margin: 0;
-      padding: 0;
+      background-color: #f7f9fa;
+      color: #333;
     }
-
     header {
-      background-color: #27ae60;
+      background: linear-gradient(90deg, #0f9d58, #43a047);
       color: white;
-      padding: 1rem;
+      padding: 1rem 2rem;
       text-align: center;
     }
-
-    .container {
-      max-width: 600px;
-      background: #fff;
-      margin: 2rem auto;
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-weight: 500;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .hero {
+      background: url('images/about.jpg') center/cover no-repeat;
+      color: white;
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+    .hero h1 {
+      font-size: 2.2rem;
+      background-color: rgba(0,0,0,0.4);
+      display: inline-block;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+    }
+    .form-section {
+      display: flex;
+      justify-content: center;
+      padding: 3rem 1rem;
+      background-color: #ffffff;
+    }
+    form {
+      background: #f4f7f8;
       padding: 2rem;
       border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-
-    h2 {
-      text-align: center;
-      color: #2c3e50;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      margin-top: 1rem;
-    }
-
     label {
+      display: block;
       margin-top: 1rem;
       font-weight: bold;
     }
-
     input, textarea {
+      width: 100%;
       padding: 0.8rem;
       margin-top: 0.3rem;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      border-radius: 6px;
       font-size: 1rem;
-      width: 100%;
-      box-sizing: border-box;
+      font-family: inherit;
     }
-
     textarea {
       resize: vertical;
-      min-height: 100px;
+      height: 100px;
     }
-
     button {
       margin-top: 1.5rem;
       padding: 0.8rem;
-      background-color: #27ae60;
+      background-color: #0f9d58;
       color: white;
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      border-radius: 6px;
       font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
     }
-
     button:hover {
-      background-color: #219150;
+      background-color: #0c8d4a;
     }
-
     .message {
       margin-top: 1rem;
       font-weight: bold;
       text-align: center;
     }
-
     footer {
+      background: #2c3e50;
+      color: white;
       text-align: center;
       padding: 1rem;
-      color: #777;
-      background-color: #f0f0f0;
       margin-top: 3rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Healing Institute</h1>
+    <h2>Healing Institute</h2>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
   </header>
 
-  <div class="container">
-    <h2>Contact Us</h2>
-    <p style="text-align:center;">
-      We’d love to hear from you. Please fill out the form below and we’ll get back to you soon.
-    </p>
+  <section class="hero">
+    <h1>Contact Us</h1>
+  </section>
 
+  <section class="form-section">
     <form id="contactForm">
-      <label for="name">Full Name:</label>
+      <h3>Send Us a Message</h3>
+
+      <label for="name">Name:</label>
       <input type="text" id="name" name="name" required />
 
-      <label for="email">Email Address:</label>
+      <label for="email">Email:</label>
       <input type="email" id="email" name="email" required />
 
-      <label for="message">Your Message:</label>
+      <label for="message">Message:</label>
       <textarea id="message" name="message" required></textarea>
 
       <button type="submit">Send Message</button>
-      <div id="response" class="message"></div>
+      <div id="responseMessage" class="message"></div>
     </form>
-  </div>
+  </section>
 
   <footer>
     <p>&copy; 2025 Healing Institute. All rights reserved.</p>
@@ -122,11 +137,11 @@
 
   <script>
     const form = document.getElementById('contactForm');
-    const responseBox = document.getElementById('response');
+    const responseMessage = document.getElementById('responseMessage');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      responseBox.textContent = '';
+      responseMessage.textContent = '';
 
       const data = {
         name: form.name.value.trim(),
@@ -135,21 +150,23 @@
       };
 
       try {
-        const response = await fetch('http://localhost:3001/contact', {
+        // Backend API through Nginx reverse proxy
+        const response = await fetch('http://13.201.37.141:3001/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
 
-        if (!response.ok) throw new Error('Failed to send message');
-        const result = await response.text();
+        const text = await response.text();
 
-        responseBox.style.color = 'green';
-        responseBox.textContent = result || 'Message sent successfully!';
+        if (!response.ok) throw new Error(text);
+
+        responseMessage.style.color = 'green';
+        responseMessage.textContent = text;
         form.reset();
       } catch (error) {
-        responseBox.style.color = 'red';
-        responseBox.textContent = 'Error: ' + error.message;
+        responseMessage.style.color = 'red';
+        responseMessage.textContent = 'Error: ' + error.message;
       }
     });
   </script>
